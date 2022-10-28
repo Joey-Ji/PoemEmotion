@@ -97,18 +97,56 @@ def backward_prop(data, label, params, forward_prop_func):
             'b2': np.sum(grad_j_b2, axis=0) / len(grad_j_b2)}
 
 
-def one_hot_labels(l):
-    one_hot_labels = np.zeros((len(l), 9))
-    for i in range(len(l)):
-        one_hot_labels[i][l[i] - 1] = 1
+def gradient_descent_epoch(train_data, train_labels, learning_rate, batch_size, params, forward_prop_func,
+                           backward_prop_func):
+    iters = len(train_data) / batch_size
+    iters = int(iters)
+    for i in range(iters):
+        start = i * batch_size
+        end = (i + 1) * batch_size
+        grads = backward_prop_func(train_data[start: end, :], train_labels[start: end, :], params, forward_prop_func)
+        for j in params:
+            params[j] -= learning_rate * grads[j]
+    return
+
+
+def one_hot_labels(la):
+    one_hot_labels = np.zeros((len(la), 9))
+    for i in range(len(la)):
+        one_hot_labels[i][la[i] - 1] = 1
     return one_hot_labels
 
 
+def compute_accuracy(output, labels):
+    accuracy = (np.argmax(output, axis=1) ==
+                np.argmax(labels, axis=1)).sum() * 1. / labels.shape[0]
+    return accuracy
+
+
 if __name__ == '__main__':
+    # Preprocess Data
     dataset = load('PERC_mendelly.xlsx')
-    a = get_words(dataset)
-    b = get_labels(dataset)
-    d = create_dict(a)
-    res = transform_poem(a, d)
-    ps = get_initial_params(len(res[0]), 100, len(labels))
-    lab = one_hot_labels(b)
+    texts = get_words(dataset)
+    emotions = get_labels(dataset)
+    vocab = create_dict(texts)
+    train_data = transform_poem(texts, emotions)
+    train_labels = one_hot_labels(emotions)
+    (train_num, dim) = train_data.shape
+
+    # Initialize model
+    param = get_initial_params(dim, 100, len(labels))
+    batch_size = 20
+    learning_rate = 0.01
+    num_epochs = 15
+
+    # Initialize analysis
+    cost_train = []
+    accuracy_train = []
+
+    for epoch in range(num_epochs):
+        gradient_descent_epoch(train_data, train_labels,
+                               learning_rate, batch_size, param, forward_prop, backward_prop)
+
+        h, output, cost = forward_prop(train_data, train_labels, param)
+        cost_train.append(cost)
+        accuracy_train.append(compute_accuracy(output, train_labels))
