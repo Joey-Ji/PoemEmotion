@@ -125,7 +125,7 @@ def compute_accuracy(output, labels):
 
 if __name__ == '__main__':
     # Preprocess Data
-    dataset = load('PERC_mendelly.xlsx')
+    dataset = load('PoemEmotion/PERC_mendelly.xlsx')
     texts = get_words(dataset)
     emotions = get_labels(dataset)
     vocab = create_dict(texts)

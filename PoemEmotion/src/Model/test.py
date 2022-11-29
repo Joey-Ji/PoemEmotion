@@ -10,3 +10,5 @@ if __name__ == '__main__':
     # utility.saveTokens('PoemEmotion/tokens.txt', ts)
     tokens = utility.readFile('PoemEmotion/tokens.txt')
     tokens = utility.cleanStopWords(tokens)
+    vocab = utility.createVocabulary(tokens)
+    print(vocab)

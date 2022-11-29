@@ -39,3 +39,13 @@ def cleanStopWords(t):
         if i not in stopwords and i != '':
             new_tokens.append(i)
     return new_tokens
+
+def createVocabulary(t):
+    vocab = {}
+    index = 0
+    for token in t:
+        if token not in vocab:
+            vocab[token] = index
+            index += 1
+    return vocab
+    
