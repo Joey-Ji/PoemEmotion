@@ -26,6 +26,16 @@ def saveTokens(save_path, tokens):
             f.write('%s\n' %token)
     f.close()
 
-def stopWords():
-    print(stopwords)
-    print(len(stopwords))
+def readFile(file_path):
+    f = open(file_path, "r")
+    tokens = f.read()
+    tokens = tokens.split("\n")
+    f.close()
+    return tokens
+
+def cleanStopWords(t):
+    new_tokens = []
+    for i in t:
+        if i not in stopwords and i != '':
+            new_tokens.append(i)
+    return new_tokens

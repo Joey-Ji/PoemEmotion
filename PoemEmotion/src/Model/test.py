@@ -8,4 +8,5 @@ if __name__ == '__main__':
     print(dataset['Poem'][0])
     # ts = utility.tokenizationWithLemmatization(dataset['Poem'])
     # utility.saveTokens('PoemEmotion/tokens.txt', ts)
-    utility.stopWords()
+    tokens = utility.readFile('PoemEmotion/tokens.txt')
+    tokens = utility.cleanStopWords(tokens)
