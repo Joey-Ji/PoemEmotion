@@ -122,6 +122,13 @@ def compute_accuracy(output, labels):
                 np.argmax(labels, axis=1)).sum() * 1. / labels.shape[0]
     return accuracy
 
+def saveLabels(savePath, labels):
+    with open(savePath, 'w+') as f:
+        for label in labels:
+            num = np.argmax(label)
+            f.write('%s\n' %num)
+    f.close()
+        
 
 if __name__ == '__main__':
     # Preprocess Data
@@ -131,6 +138,7 @@ if __name__ == '__main__':
     vocab = create_dict(texts)
     train_data = transform_poem(texts, emotions)
     train_labels = one_hot_labels(emotions)
+    saveLabels('PoemEmotion/labels.txt', train_labels)
     (train_num, dim) = train_data.shape
 
     # Initialize model
