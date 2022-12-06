@@ -99,13 +99,13 @@ def tokenize_data_occurrence(data, vocab):
 
 def preprocess_inputs(data, labels):
     '''
-    Given original data and labels, return ready-for-training data/labels
+    Given original data and labels, return ready-for-training data/labels and vocab
 
     Input:
         data, labels
     
     Output:
-        data, labels
+        data, labels, vocab
     '''
     # Preprocess data and create vocabulary
     token_list = cleanStopWords(data)
@@ -116,7 +116,7 @@ def preprocess_inputs(data, labels):
     all_data = tokenize_data_occurrence(token_list, vocab)
     all_data, all_label = smote_resample(all_data, labels)
 
-    return all_data, all_label
+    return all_data, all_label, vocab
 
 if __name__ == '__main__':
     # Load data and labels
