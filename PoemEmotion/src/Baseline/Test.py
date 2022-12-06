@@ -1,7 +1,9 @@
 import re
 
+import utility
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 labels = {'love': 1, 'sad': 2, 'anger': 3, 'hate': 4, 'fear': 5, 'surprise': 6, 'courage': 7, 'joy': 8, 'peace': 9}
 
@@ -128,28 +130,54 @@ def saveLabels(savePath, labels):
             num = np.argmax(label)
             f.write('%s\n' %num)
     f.close()
-        
+
+def evaluation(data, labels, params):
+    h, output, cost = forward_prop(data, labels, params)
+    accuracy = compute_accuracy(output, labels)
+    return accuracy
+
 
 if __name__ == '__main__':
+    np.random.seed(19)
+
     # Preprocess Data
     dataset = load('PoemEmotion/PERC_mendelly.xlsx')
-    texts = get_words(dataset)
+    token_list = utility.loadTokens('PoemEmotion/token_list.txt')
     emotions = get_labels(dataset)
-    vocab = create_dict(texts)
-    train_data = transform_poem(texts, emotions)
-    train_labels = one_hot_labels(emotions)
-    saveLabels('PoemEmotion/labels.txt', train_labels)
+    vocab = create_dict(token_list)
+
+    # Generate Training, Validation, Testing data
+    all_data = transform_poem(token_list, vocab)
+    all_labels = one_hot_labels(emotions)
+    test_data = all_data[-40:, :]
+    test_labels = all_labels[-40:, :]
+
+    all_data = all_data[:-40, :]
+    all_labels = all_labels[:-40, :]
+
+    p = np.random.permutation(len(all_data))
+    all_data = all_data[p, :]
+    all_labels = all_labels[p, :]
+
+    train_data = all_data[40:, :]
+    train_labels = all_labels[40:, :]
+
+    val_data = all_data[:40, :]
+    val_labels = all_labels[:40, :]
+
     (train_num, dim) = train_data.shape
 
     # Initialize model
-    param = get_initial_params(dim, 100, len(labels))
-    batch_size = 20
-    learning_rate = 0.01
-    num_epochs = 15
+    param = get_initial_params(dim, 300, len(labels))
+    batch_size = 8
+    learning_rate = 0.5
+    num_epochs = 50
 
     # Initialize analysis
     cost_train = []
+    cost_val = []
     accuracy_train = []
+    accuracy_val = []
 
     for epoch in range(num_epochs):
         gradient_descent_epoch(train_data, train_labels,
@@ -158,3 +186,28 @@ if __name__ == '__main__':
         h, output, cost = forward_prop(train_data, train_labels, param)
         cost_train.append(cost)
         accuracy_train.append(compute_accuracy(output, train_labels))
+        h, output, cost = forward_prop(val_data, val_labels, param)
+        cost_val.append(cost)
+        accuracy_val.append(compute_accuracy(output, val_labels))
+
+    t = np.arange(num_epochs)
+
+    fig, (ax1, ax2) = plt.subplots(2, 1)
+
+    ax1.plot(t, cost_train, 'r', label='train')
+    ax1.plot(t, cost_val, 'b', label='validation')
+    ax1.set_xlabel('epochs')
+    ax1.set_ylabel('loss')
+    ax1.set_title('BaseLine Model')
+    ax1.legend()
+
+    ax2.plot(t, accuracy_train, 'r', label='train')
+    ax2.plot(t, accuracy_val, 'b', label='validation')
+    ax2.set_xlabel('epochs')
+    ax2.set_ylabel('accuracy')
+    ax2.legend()
+
+    fig.savefig('./' + 'baseline' + '.pdf')
+    
+    accuracy = evaluation(test_data, test_labels, param)
+    print('For %s model, got accuracy: %f' % ('baseline', accuracy))

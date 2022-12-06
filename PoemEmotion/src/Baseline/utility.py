@@ -25,10 +25,10 @@ def tokenizationWithLemmatization(dataset):
 def saveTokens(save_path, token_list):
     with open(save_path, 'w+') as f:
         for tokens in token_list:
-            # f.write('[CLS],')
+            f.write('[CLS],')
             for token in tokens:
                 f.write('%s,' %token)
-            # f.write('[SEP]')
+            f.write('[SEP]')
             f.write('\n')
     f.close()
 
@@ -48,18 +48,24 @@ def cleanStopWords(t):
             new_tokens.append(i)
     return new_tokens
 
-
+def createVocabulary(t):
+    vocab = {}
+    index = 0
+    for token in t:
+        if token not in vocab:
+            vocab[token] = index
+            index += 1
+    return vocab
 
 def loadTokens(filePath):
     token_list = []
     with open(filePath) as f:
         for line in f:
             tokens = [token.strip() for token in line.split(',')]
-            clean_tokens = [tokens[0]]
+            clean_tokens = []
             for i in range(1, len(tokens)-1):
                 if tokens[i] not in stopwords:
                     clean_tokens.append(tokens[i])
-            clean_tokens.append(tokens[len(tokens)-1])
             token_list.append(clean_tokens)
     f.close()
     return token_list
