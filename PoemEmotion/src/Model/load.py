@@ -1,4 +1,6 @@
-# This file contains functions related to loading datasets
+'''
+Contains all functions that deal with loading dataset
+'''
 import pandas as pd
 
 #Load the dataset according to the file path

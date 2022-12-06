@@ -1,3 +1,6 @@
+'''
+Contains all functions that deal with preprocessing
+'''
 import utility, load
 import numpy as np
 from imblearn.over_sampling import SMOTE
@@ -94,6 +97,26 @@ def tokenize_data_occurrence(data, vocab):
                 input_data[i, vocab[word]] += 1
     return input_data
 
+def preprocess_inputs(data, labels):
+    '''
+    Given original data and labels, return ready-for-training data/labels
+
+    Input:
+        data, labels
+    
+    Output:
+        data, labels
+    '''
+    # Preprocess data and create vocabulary
+    token_list = cleanStopWords(data)
+    tokens = getTokens(token_list)
+    vocab = createVocabulary(tokens)
+
+    # Resample data and labels with SMOTE
+    all_data = tokenize_data_occurrence(token_list, vocab)
+    all_data, all_label = smote_resample(all_data, labels)
+
+    return all_data, all_label
 
 if __name__ == '__main__':
     # Load data and labels
@@ -108,9 +131,3 @@ if __name__ == '__main__':
     # Resample data and labels with SMOTE
     all_data = tokenize_data_occurrence(token_list, vocab)
     all_data, all_label = smote_resample(all_data, labels)
-
-    label_num = [0 for i in range(9)]
-    for i in all_label:
-        label_num[i] += 1
-    print(label_num)
-    print(len(all_data))

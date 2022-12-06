@@ -1,9 +1,7 @@
-#This file contains utility functions that pre-process data
+'''
+Contains some useful utility functions
+'''
 import stanza as st
-import spacy
-
-en_model = spacy.load('en_core_web_sm')
-stopwords = en_model.Defaults.stop_words
 
 def tokenizationWithLemmatization(dataset):
     token_list = []
@@ -40,15 +38,6 @@ def readFile(file_path):
             token_list.append(tokens)
     tokenFile.close()
     return token_list
-
-def cleanStopWords(t):
-    new_tokens = []
-    for i in t:
-        if i not in stopwords and i != '':
-            new_tokens.append(i)
-    return new_tokens
-
-
 
 def loadTokens(filePath):
     token_list = []
