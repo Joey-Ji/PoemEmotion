@@ -1,5 +1,7 @@
 '''
 Contains all functions that deal with preprocessing
+
+Created and Edited by Junyi(Joey) Ji
 '''
 import utility, load
 import numpy as np
