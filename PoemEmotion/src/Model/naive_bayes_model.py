@@ -1,5 +1,7 @@
 '''
 This File is the implementation of the Multinomial Naive Bayes Classifier
+
+Created and Edited by Junyi(Joey) Ji
 '''
 
 import preprocess, utility, load
@@ -145,23 +147,19 @@ if __name__ == '__main__':
 
     # Preprocess Dataset, Labels
     all_data, all_labels, vocab = preprocess.preprocess_inputs(token_list, labels)
-    print(len(all_data))
+    # print(len(all_data))
     train_data, test_data, train_labels, test_labels = train_test_split(all_data, all_labels, random_state=100, test_size=0.1)
     train_data, val_data, train_labels, val_labels = train_test_split(train_data, train_labels, random_state=100, test_size=0.12)
 
     model = fit_naive_bayes(train_data, train_labels, vocab, alpha=0.01)
     val_prediction = predict_naive_bayes(model, val_data)
     test_prediction = predict_naive_bayes(model, test_data)
+    print("Validation without IDF:", utility.assessPerformance(val_labels, val_prediction))
+    print("Test without IDF:", utility.assessPerformance(test_labels, test_prediction))
+
     
     IDF = calculateIDF(all_data)
     val_prediction = predict_naive_bayes_IDF(model, val_data, IDF)
     test_prediction = predict_naive_bayes_IDF(model, test_data, IDF)
-    
-    
-    f1 = f1_score(val_prediction, val_labels, average='macro')
-    acc = accuracy_score(val_prediction, val_labels)
-    print(f1, acc)
-
-    f1 = f1_score(test_prediction, test_labels, average='macro')
-    acc = accuracy_score(test_prediction, test_labels)
-    print(f1, acc)
+    print("Validation with IDF:", utility.assessPerformance(val_labels, val_prediction))
+    print("Test with IDF:", utility.assessPerformance(test_labels, test_prediction))

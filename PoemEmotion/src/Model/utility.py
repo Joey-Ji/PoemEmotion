@@ -2,6 +2,7 @@
 Contains some useful utility functions
 '''
 import stanza as st
+from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 
 def tokenizationWithLemmatization(dataset):
     token_list = []
@@ -52,3 +53,10 @@ def loadTokens(filePath):
             token_list.append(clean_tokens)
     f.close()
     return token_list
+
+def assessPerformance(true_labels, predicted_labels):
+    f1 = f1_score(true_labels, predicted_labels, average='macro')
+    acc = accuracy_score(true_labels, predicted_labels)
+    recall = recall_score(true_labels, predicted_labels, average='macro')
+    precision = precision_score(true_labels, predicted_labels, average='macro')
+    return {"f1":f1, "acc":acc, "recall":recall, "precision":precision}
