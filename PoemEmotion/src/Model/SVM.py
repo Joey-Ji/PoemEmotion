@@ -18,10 +18,13 @@ if __name__ == '__main__':
     train_data, test_data, train_labels, test_labels = train_test_split(all_data, all_labels, random_state=100, test_size=0.1)
     train_data, val_data, train_labels, val_labels = train_test_split(train_data, train_labels, random_state=100, test_size=0.12)
 
+    # Train the Linear SVC model
     linear = SVC(kernel='linear', C=0.35).fit(train_data, train_labels)
 
+    # Make predictions with the SVC model
     val_pred = linear.predict(val_data)
     test_pred = linear.predict(test_data)
 
+    # Assess the performance of the model
     print("linear validation:", utility.assessPerformance(val_labels, val_pred))
     print("linear test:", utility.assessPerformance(test_labels, test_pred))

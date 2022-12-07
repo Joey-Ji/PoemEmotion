@@ -5,11 +5,17 @@ Created and Edited by Junyi(Joey) Ji
 '''
 import pandas as pd
 
-#Load the dataset according to the file path
+
 def load(filepath):
+    '''
+    Load the dataset according to the file path
+    '''
     return pd.read_excel(filepath)
 
 def loadLabels(filePath):
+    '''
+    Load the labels according to the label path
+    '''
     labels = []
     with open(filePath) as f:
         for label in f:
