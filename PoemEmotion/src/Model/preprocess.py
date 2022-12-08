@@ -80,7 +80,7 @@ def getTokens(token_list):
 
 def tokenize_data_occurrence(data, vocab):
     '''
-    Tokenize data with the given vocabulary
+    Tokenize data with the given vocabulary in frequency-representation
 
     Input: 
         data, vocab
@@ -99,9 +99,32 @@ def tokenize_data_occurrence(data, vocab):
                 input_data[i, vocab[word]] += 1
     return input_data
 
+def tokenize_data_id(data, vocab, max_len):
+    '''
+    Tokenize data with the given vocabulary in sequence representation
+
+    Input: 
+        data, vocab
+
+    Output: 
+        A numpy array with shape (n_samples, n_features)
+        Where the component (i,j) is the vocabulary id of 
+        the j-th word in the i-th message.
+    '''
+    n_samples = len(data)
+    input_data = np.zeros(shape=(n_samples, max_len), dtype=int)
+    for i in range(n_samples):
+        for j in range(len(data[i])):
+            if j == max_len:
+                break
+            if data[i][j] in vocab:
+                input_data[i, j] = vocab[data[i][j]] + 1
+    return input_data
+
 def preprocess_inputs(data, labels):
     '''
-    Given original data and labels, return ready-for-training data/labels and vocab
+    Given original data and labels, return ready-for-training data/labels and vocab.
+    This function is designed for word occurrence matrix.
 
     Input:
         data, labels
@@ -120,6 +143,28 @@ def preprocess_inputs(data, labels):
 
     return all_data, all_label, vocab
 
+def preprocess_inputs_ids(data, labels, max_len):
+    '''
+    Given original data and labels, return ready-for-training data/labels and vocab.
+    This function is designed for word ids matrix.
+
+    Input:
+        data, labels
+    
+    Output:
+        data, labels, vocab
+    '''
+    # Preprocess data and create vocabulary
+    token_list = cleanStopWords(data)
+    tokens = getTokens(token_list)
+    vocab = createVocabulary(tokens)
+
+    # Resample data and labels with SMOTE
+    all_data = tokenize_data_id(token_list, vocab, max_len)
+    all_data, all_label = smote_resample(all_data, labels)
+
+    return all_data, all_label, vocab
+
 if __name__ == '__main__':
     # Load data and labels
     token_list = utility.readFile('PoemEmotion/token_list.txt')
@@ -132,4 +177,5 @@ if __name__ == '__main__':
 
     # Resample data and labels with SMOTE
     all_data = tokenize_data_occurrence(token_list, vocab)
+    all_data = tokenize_data_id(token_list, vocab, 200)
     all_data, all_label = smote_resample(all_data, labels)

@@ -222,6 +222,7 @@ if __name__ == '__main__':
 
     # Preprocess Dataset, Labels
     all_data, all_labels, vocab = preprocess.preprocess_inputs(token_list, labels)
+    # all_data, all_labels, vocab = preprocess.preprocess_inputs_ids(token_list, labels, 50)
     all_labels = one_hot_labels(all_labels)
     train_data, test_data, train_labels, test_labels = train_test_split(all_data, all_labels, random_state=100, test_size=0.1)
     train_data, val_data, train_labels, val_labels = train_test_split(train_data, train_labels, random_state=100, test_size=0.12)
