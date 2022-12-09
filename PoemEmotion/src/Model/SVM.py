@@ -7,6 +7,9 @@ import preprocess, utility, load
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.svm import LinearSVC
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import numpy as np
 
 if __name__ == '__main__':
     # Load Dataset
@@ -30,3 +33,20 @@ if __name__ == '__main__':
     # Assess the performance of the model
     print("linear validation:", utility.assessPerformance(val_labels, val_pred))
     print("linear test:", utility.assessPerformance(test_labels, test_pred))
+
+    cm = confusion_matrix(test_labels, test_pred)
+
+    plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+    plt.colorbar()
+    tick_marks = ['love', 'sad', 'anger', 'hate', 'fear', 'surprise', 'courage', 'joy', 'peace']
+    plt.xticks(np.arange(9), tick_marks)
+    plt.yticks(np.arange(9), tick_marks)
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+    plt.title('SVM Confusion Matrix')
+
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            text = plt.text(j, i, cm[i,j], ha='center', va='center', color='y')
+    
+    plt.show()

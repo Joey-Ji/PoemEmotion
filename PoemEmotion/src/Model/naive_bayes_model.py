@@ -7,7 +7,7 @@ Created and Edited by Junyi(Joey) Ji
 import preprocess, utility, load
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.model_selection import KFold
 
 EMOTIONS = {'love': 0, 'sad': 1, 'anger': 2, 'hate': 3, 'fear': 4, 'surprise': 5, 'courage': 6, 'joy': 7, 'peace': 8}
 
@@ -139,27 +139,61 @@ def calculateIDF(data):
                 IDF[i] += 1
     IDF = np.log(n_samples / IDF)
     return IDF
-        
+
+def k_fold_cross_validation(all_data, all_labels, vocab, isIDF, k):
+    kf = KFold(n_splits=k)
+    metrics = {"f1":0, "acc":0, "recall":0, "precision":0}   
+    IDF = calculateIDF(all_data)
+    for train_index, test_index in kf.split(all_data, all_labels):
+        train_data, test_data = all_data[min(train_index):max(train_index)+1], all_data[min(test_index):max(test_index)+1]
+        train_label, test_label = all_labels[min(train_index):max(train_index)+1], all_labels[min(test_index):max(test_index)+1]
+
+        model = fit_naive_bayes(train_data, train_label, vocab, alpha=0.01)
+        if isIDF:
+            test_prediction = predict_naive_bayes_IDF(model, test_data, IDF)
+        else:
+            test_prediction = predict_naive_bayes(model, test_data)
+        performance = utility.assessPerformance(test_label, test_prediction)
+        for i in metrics:
+            metrics[i] += performance[i]
+    return metrics / k
+
+
 if __name__ == '__main__':
     # Load Dataset
     token_list = utility.readFile('PoemEmotion/token_list.txt')
     labels = load.loadLabels('PoemEmotion/labels.txt')
 
-    # Preprocess Dataset, Labels
-    all_data, all_labels, vocab = preprocess.preprocess_inputs(token_list, labels)
-    # print(len(all_data))
-    train_data, test_data, train_labels, test_labels = train_test_split(all_data, all_labels, random_state=100, test_size=0.1)
-    train_data, val_data, train_labels, val_labels = train_test_split(train_data, train_labels, random_state=100, test_size=0.12)
+    overall = {"f1":0, "acc":0, "recall":0, "precision":0}
+    overall_IDF = {"f1":0, "acc":0, "recall":0, "precision":0}      
 
-    model = fit_naive_bayes(train_data, train_labels, vocab, alpha=0.01)
-    val_prediction = predict_naive_bayes(model, val_data)
-    test_prediction = predict_naive_bayes(model, test_data)
-    print("Validation without IDF:", utility.assessPerformance(val_labels, val_prediction))
-    print("Test without IDF:", utility.assessPerformance(test_labels, test_prediction))
+    num_epoch = 10
+    for epoch in range(num_epoch):
+    # Preprocess Dataset, Labels
+        all_data, all_labels, vocab = preprocess.preprocess_inputs(token_list, labels)
+        train_data, test_data, train_labels, test_labels = train_test_split(all_data, all_labels, random_state=100, test_size=0.1)
+        train_data, val_data, train_labels, val_labels = train_test_split(train_data, train_labels, random_state=100, test_size=0.12)
+
+        model = fit_naive_bayes(train_data, train_labels, vocab, alpha=0.01)
+        val_prediction = predict_naive_bayes(model, val_data)
+        test_prediction = predict_naive_bayes(model, test_data)
+        performance = utility.assessPerformance(test_labels, test_prediction)
+        print("Validation without IDF:", utility.assessPerformance(val_labels, val_prediction))
+        print("Test without IDF:", utility.assessPerformance(test_labels, test_prediction))
+        for i in performance:
+            overall[i] += performance[i]
 
     
-    IDF = calculateIDF(all_data)
-    val_prediction = predict_naive_bayes_IDF(model, val_data, IDF)
-    test_prediction = predict_naive_bayes_IDF(model, test_data, IDF)
-    print("Validation with IDF:", utility.assessPerformance(val_labels, val_prediction))
-    print("Test with IDF:", utility.assessPerformance(test_labels, test_prediction))
+        IDF = calculateIDF(all_data)
+        val_prediction = predict_naive_bayes_IDF(model, val_data, IDF)
+        test_prediction = predict_naive_bayes_IDF(model, test_data, IDF)
+        performance = utility.assessPerformance(test_labels, test_prediction)
+        for i in performance:
+            overall_IDF[i] += performance[i]
+        print("Validation with IDF:", utility.assessPerformance(val_labels, val_prediction))
+        print("Test with IDF:", utility.assessPerformance(test_labels, test_prediction))
+    for i in overall:
+        overall[i] /= num_epoch
+        overall_IDF[i] /= num_epoch
+    print("Overall Without IDF:", overall)
+    print("Overall with IDF:", overall_IDF)

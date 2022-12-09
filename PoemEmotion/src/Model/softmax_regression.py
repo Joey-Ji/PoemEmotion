@@ -149,22 +149,13 @@ def fit_softmax_regression(train_data, train_labels, val_data, val_labels, batch
 
     t = np.arange(num_epochs)
 
-    fig, (ax1, ax2) = plt.subplots(2, 1)
+    plt.plot(t, cost_train, 'r', label='train')
+    plt.plot(t, cost_val, 'b', label='validation')
+    plt.xlabel('epochs')
+    plt.ylabel('loss')
+    plt.legend()
 
-    ax1.plot(t, cost_train, 'r', label='train')
-    ax1.plot(t, cost_val, 'b', label='validation')
-    ax1.set_xlabel('epochs')
-    ax1.set_ylabel('loss')
-    ax1.set_title('Softmax Unregularized Model')
-    ax1.legend()
-
-    ax2.plot(t, accuracy_train, 'r', label='train')
-    ax2.plot(t, accuracy_val, 'b', label='validation')
-    ax2.set_xlabel('epochs')
-    ax2.set_ylabel('accuracy')
-    ax2.legend()
-
-    fig.savefig('PoemEmotion/' + 'softmax_regression' + '.pdf')
+    plt.savefig('PoemEmotion/' + 'softmax_regression' + '.pdf')
     return param
 
 def fit_softmax_regression_reg(train_data, train_labels, val_data, val_labels, reg, batch_size=32, learning_rate=0.75, num_epochs=30, hidden_layer=175):
@@ -196,22 +187,14 @@ def fit_softmax_regression_reg(train_data, train_labels, val_data, val_labels, r
 
     t = np.arange(num_epochs)
 
-    fig, (ax1, ax2) = plt.subplots(2, 1)
+    plt.plot(t, cost_train, 'g', label='Regularized train')
+    plt.plot(t, cost_val, 'y', label='Regularized validation')
+    plt.xlabel('epochs')
+    plt.ylabel('loss')
+    plt.title('Softmax Regression Model')
+    plt.legend()
 
-    ax1.plot(t, cost_train, 'r', label='train')
-    ax1.plot(t, cost_val, 'b', label='validation')
-    ax1.set_xlabel('epochs')
-    ax1.set_ylabel('loss')
-    ax1.set_title('Softmax Regularized Model')
-    ax1.legend()
-
-    ax2.plot(t, accuracy_train, 'r', label='train')
-    ax2.plot(t, accuracy_val, 'b', label='validation')
-    ax2.set_xlabel('epochs')
-    ax2.set_ylabel('accuracy')
-    ax2.legend()
-
-    fig.savefig('PoemEmotion/' + 'softmax_reg_regression' + '.pdf')
+    plt.savefig('PoemEmotion/' + 'softmax_reg_regression' + '.pdf')
     return param
 
 
@@ -229,7 +212,7 @@ if __name__ == '__main__':
 
     # Train Models
     softmax_model = fit_softmax_regression(train_data, train_labels, val_data, val_labels)
-    softmax_reg_model = fit_softmax_regression_reg(train_data, train_labels, val_data, val_labels, reg=0.0008)
+    softmax_reg_model = fit_softmax_regression_reg(train_data, train_labels, val_data, val_labels, reg=0.0006)
 
     # Make Predictions
     test_pred = np.argmax(model_prediction(test_data, test_labels, softmax_model),axis=1)
