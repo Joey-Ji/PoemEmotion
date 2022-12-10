@@ -11,6 +11,7 @@ from sklearn.model_selection import KFold
 
 EMOTIONS = {'love': 0, 'sad': 1, 'anger': 2, 'hate': 3, 'fear': 4, 'surprise': 5, 'courage': 6, 'joy': 7, 'peace': 8}
 
+
 def label_prob(labels):
     '''
     Calculate the probability of each label(emotion) in the dataset
@@ -31,6 +32,7 @@ def label_prob(labels):
     
     return phi_label
 
+
 def words_label_num(data, labels):
     '''
     Calculate the number of words for each label
@@ -47,6 +49,7 @@ def words_label_num(data, labels):
     for i in range(num_sample):
         num_label[labels[i]] += sum(data[i])
     return num_label
+
 
 def fit_naive_bayes(data, labels, vocab, alpha=1):
     '''
@@ -73,6 +76,7 @@ def fit_naive_bayes(data, labels, vocab, alpha=1):
         naive_bayes_model.append(word_num_label / words_num_label)
     return naive_bayes_model, phi_label
 
+
 def predict_naive_bayes(model, data):
     '''
     Make predictions with the multinomial naive bayes
@@ -95,6 +99,7 @@ def predict_naive_bayes(model, data):
         predict_labels.append(np.argmax(prob_label))
   
     return predict_labels
+
 
 def predict_naive_bayes_IDF(model, data, IDF):
     '''
@@ -139,6 +144,7 @@ def calculateIDF(data):
                 IDF[i] += 1
     IDF = np.log(n_samples / IDF)
     return IDF
+
 
 def k_fold_cross_validation(all_data, all_labels, vocab, isIDF, k):
     kf = KFold(n_splits=k)
@@ -195,5 +201,5 @@ if __name__ == '__main__':
     for i in overall:
         overall[i] /= num_epoch
         overall_IDF[i] /= num_epoch
-    print("Overall Without IDF:", overall)
-    print("Overall with IDF:", overall_IDF)
+    print("Overall statistics Without IDF:", overall)
+    print("Overall statistics with IDF:", overall_IDF)

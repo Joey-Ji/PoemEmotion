@@ -12,6 +12,7 @@ def load(filepath):
     '''
     return pd.read_excel(filepath)
 
+
 def loadLabels(filePath):
     '''
     Load the labels according to the label path

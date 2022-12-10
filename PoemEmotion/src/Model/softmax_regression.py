@@ -65,6 +65,7 @@ def backward_prop(data, label, params, forward_prop_func):
             'b1': np.sum(grad_j_b1, axis=0) / len(grad_j_b1),
             'b2': np.sum(grad_j_b2, axis=0) / len(grad_j_b2)}
 
+
 def backward_prop_reg(data, label, params, forward_prop_func, reg):
     '''
     Implement the backward propegation gradient computation step for a neural network with regularization
@@ -80,6 +81,7 @@ def backward_prop_reg(data, label, params, forward_prop_func, reg):
             'W2': sum(grad_j_w2) / len(grad_j_w2) + 2 * reg * params['W2'],
             'b1': np.sum(grad_j_b1, axis=0) / len(grad_j_b1),
             'b2': np.sum(grad_j_b2, axis=0) / len(grad_j_b2)}
+
 
 def gradient_descent_epoch(train_data, train_labels, learning_rate, batch_size, params, forward_prop_func,
                            backward_prop_func):
@@ -116,12 +118,14 @@ def compute_accuracy(output, labels):
                 np.argmax(labels, axis=1)).sum() * 1. / labels.shape[0]
     return accuracy
 
+
 def model_prediction(data, labels, params):
     '''
     Make predictions based on the softmax regression model
     '''
     h, output, cost = forward_prop(data, labels, params)
     return output
+
 
 def fit_softmax_regression(train_data, train_labels, val_data, val_labels, batch_size=32, learning_rate=0.75, num_epochs=30, hidden_layer=175):
     '''
@@ -160,6 +164,7 @@ def fit_softmax_regression(train_data, train_labels, val_data, val_labels, batch
 
     plt.savefig('PoemEmotion/' + 'softmax_regression' + '.pdf')
     return param
+
 
 def fit_softmax_regression_reg(train_data, train_labels, val_data, val_labels, reg, batch_size=32, learning_rate=0.75, num_epochs=30, hidden_layer=175):
     '''

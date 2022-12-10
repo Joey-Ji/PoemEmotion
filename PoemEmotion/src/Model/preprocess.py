@@ -29,6 +29,7 @@ def smote_resample(data, label):
 
     return data_resampled, label_resampled
 
+
 def cleanStopWords(token_list):
     '''
     Cleans the stopwords in data.
@@ -43,6 +44,7 @@ def cleanStopWords(token_list):
         new_token_list.append(new_sent)
 
     return new_token_list
+
 
 def createVocabulary(t):
     '''
@@ -62,6 +64,7 @@ def createVocabulary(t):
             index += 1
     return vocab
 
+
 def getTokens(token_list):
     '''
     Get all tokens in a list of tokens
@@ -77,6 +80,7 @@ def getTokens(token_list):
         for token in sent:
             tokens.append(token)
     return tokens
+
 
 def tokenize_data_occurrence(data, vocab):
     '''
@@ -98,6 +102,7 @@ def tokenize_data_occurrence(data, vocab):
             if word in vocab:
                 input_data[i, vocab[word]] += 1
     return input_data
+
 
 def tokenize_data_id(data, vocab, max_len):
     '''
@@ -121,6 +126,7 @@ def tokenize_data_id(data, vocab, max_len):
                 input_data[i, j] = vocab[data[i][j]] + 1
     return input_data
 
+
 def preprocess_inputs(data, labels):
     '''
     Given original data and labels, return ready-for-training data/labels and vocab.
@@ -143,6 +149,7 @@ def preprocess_inputs(data, labels):
 
     return all_data, all_label, vocab
 
+
 def preprocess_inputs_ids(data, labels, max_len):
     '''
     Given original data and labels, return ready-for-training data/labels and vocab.
@@ -164,6 +171,7 @@ def preprocess_inputs_ids(data, labels, max_len):
     all_data, all_label = smote_resample(all_data, labels)
 
     return all_data, all_label, vocab
+
 
 if __name__ == '__main__':
     # Load data and labels

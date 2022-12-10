@@ -11,6 +11,7 @@ from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 if __name__ == '__main__':
     # Load Dataset
     token_list = utility.readFile('PoemEmotion/token_list.txt')
@@ -36,6 +37,7 @@ if __name__ == '__main__':
 
     cm = confusion_matrix(test_labels, test_pred)
 
+    # Plot the confusion matrix
     plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
     plt.colorbar()
     tick_marks = ['love', 'sad', 'anger', 'hate', 'fear', 'surprise', 'courage', 'joy', 'peace']

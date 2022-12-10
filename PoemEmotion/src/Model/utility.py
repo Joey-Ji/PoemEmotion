@@ -17,6 +17,7 @@ def load(filepath):
     '''
     return pd.read_excel(filepath)
 
+
 def tokenizationWithLemmatization(dataset):
     '''
     Tokenize the poems with lemmatization
@@ -37,6 +38,7 @@ def tokenizationWithLemmatization(dataset):
         token_list.append(tokens)
     return token_list
 
+
 def get_labels(data):
     '''
     Transform emotions to labels
@@ -46,6 +48,7 @@ def get_labels(data):
         y.append(EMOTIONS[i]-1)
     return y
 
+
 def saveLabels(save_path, labels):
     '''
     Save the labels in a file
@@ -54,6 +57,7 @@ def saveLabels(save_path, labels):
         for label in labels:
             f.write('%s\n' %label)
     f.close()
+
 
 def saveTokens(save_path, token_list):
     '''
@@ -66,6 +70,7 @@ def saveTokens(save_path, token_list):
             f.write('\n')
     f.close()
 
+
 def readFile(file_path):
     '''
     Read the token list
@@ -77,6 +82,7 @@ def readFile(file_path):
             token_list.append(tokens)
     tokenFile.close()
     return token_list
+
 
 def assessPerformance(true_labels, predicted_labels):
     '''
