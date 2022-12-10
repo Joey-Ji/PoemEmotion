@@ -16,3 +16,12 @@ The purpose of this project is to compare the performance of different models/me
 * `model` contains the final implementations of the models we discussed in the report and the dependencies needed.
 
 `PERC_mendelly.xlsx` is the dataset
+
+`token_list.txt` contains the tokenized form of the poems (used for model training)
+
+`token_list_bert.txt` contains the tokenized form of the poems used by BERT
+
+`labels.txt` contains the numeric reprensentation of class.
+
+`tokens.txt` contains all the tokens(words) that appear in the dataset.
+
