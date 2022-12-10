@@ -99,6 +99,9 @@ def gradient_descent_epoch(train_data, train_labels, learning_rate, batch_size, 
 
 
 def one_hot_labels(la):
+    '''
+    Get the one_hot_representation of labels
+    '''
     one_hot_labels = np.zeros((len(la), 9))
     for i in range(len(la)):
         one_hot_labels[i][la[i] - 1] = 1

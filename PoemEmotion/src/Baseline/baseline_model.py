@@ -1,5 +1,10 @@
-import re
+'''
+This file is the naive implementation of the softmax regression model. 
+***(The baseline model for Project Milestone)***
 
+Created and Edited by Junyi(Joey) Ji
+'''
+import re
 import utility
 import numpy as np
 import pandas as pd
@@ -9,16 +14,25 @@ labels = {'love': 1, 'sad': 2, 'anger': 3, 'hate': 4, 'fear': 5, 'surprise': 6, 
 
 
 def softmax(x):
+    '''
+    Compute softmax function for a batch of input values.
+    '''
     e = np.exp((x.T - np.amax(x, axis=1)).T)
     e_total = np.sum(e, axis=1)
     return (e.T / e_total).T
 
 
 def sigmoid(x):
+    '''
+    Compute sigmoid function for a batch of input values
+    '''
     return 1 / (1 + np.exp(-x))
 
 
 def get_initial_params(input_size, num_hidden, num_output):
+    '''
+    Compute the initial params for the softmax regression model
+    '''
     w_one = np.random.normal(loc=0, scale=1, size=(input_size, num_hidden))
     w_two = np.random.normal(loc=0, scale=1, size=(num_hidden, num_output))
     param = {'W1': w_one, 'b1': np.zeros(shape=num_hidden), 'W2': w_two, 'b2': np.zeros(shape=num_output)}
@@ -26,31 +40,16 @@ def get_initial_params(input_size, num_hidden, num_output):
 
 
 def load(filepath):
+    '''
+    Load the whole dataset
+    '''
     return pd.read_excel(filepath)
 
 
-def get_words(data):
-    poems = []
-    for i in data['Poem']:
-        words = i.lower()
-        words = re.split('\n|-| ', words)
-        s = []
-        for j in words:
-            if len(j) > 3:
-                if '.' in j:
-                    j = j[:-1]
-                if ',' in j:
-                    j = j[:-1]
-                if '?' in j:
-                    j = j[:-1]
-                if '!' in j:
-                    j = j[:-1]
-                s.append(j)
-        poems.append(s)
-    return poems
-
-
 def get_labels(data):
+    '''
+    Return the numeric forms of the labels
+    '''
     y = []
     for i in dataset['Emotion']:
         y.append(labels[i])
@@ -58,6 +57,9 @@ def get_labels(data):
 
 
 def create_dict(poems):
+    '''
+    Create a vocabulary based on the words
+    '''
     d = {}
     index = 0
     for poem in poems:
@@ -69,6 +71,9 @@ def create_dict(poems):
 
 
 def transform_poem(poems, word_dictionary):
+    '''
+    Transform the dataset into the frequency-based representation inputs
+    '''
     poem_word = np.zeros((len(poems), len(word_dictionary)), dtype=int)
     for i in range(len(poems)):
         poem = poems[i]
@@ -79,6 +84,9 @@ def transform_poem(poems, word_dictionary):
 
 
 def forward_prop(data, label, params):
+    '''
+    Implement the forward layer given the data, label, and params
+    '''
     k = data @ params['W1'] + params['b1']
     alpha = sigmoid(k)
     y_hat = softmax(alpha @ params['W2'] + params['b2'])
@@ -87,6 +95,9 @@ def forward_prop(data, label, params):
 
 
 def backward_prop(data, label, params, forward_prop_func):
+    '''
+    Implement the backward propegation gradient computation step for a neural network
+    '''
     h, output, cost = forward_prop_func(data, label, params)
 
     grad_j_b2 = output - label
@@ -101,6 +112,9 @@ def backward_prop(data, label, params, forward_prop_func):
 
 def gradient_descent_epoch(train_data, train_labels, learning_rate, batch_size, params, forward_prop_func,
                            backward_prop_func):
+    '''
+    Perform one epoch of the gradient descent on the given training data using the provided learning rate.
+    '''
     iters = len(train_data) / batch_size
     iters = int(iters)
     for i in range(iters):
@@ -113,6 +127,9 @@ def gradient_descent_epoch(train_data, train_labels, learning_rate, batch_size, 
 
 
 def one_hot_labels(la):
+    '''
+    Get the one_hot_representation of labels
+    '''
     one_hot_labels = np.zeros((len(la), 9))
     for i in range(len(la)):
         one_hot_labels[i][la[i] - 1] = 1
@@ -120,18 +137,18 @@ def one_hot_labels(la):
 
 
 def compute_accuracy(output, labels):
+    '''
+    Compute the accuracy of the predicted labels and the true labels
+    '''
     accuracy = (np.argmax(output, axis=1) ==
                 np.argmax(labels, axis=1)).sum() * 1. / labels.shape[0]
     return accuracy
 
-def saveLabels(savePath, labels):
-    with open(savePath, 'w+') as f:
-        for label in labels:
-            num = np.argmax(label)
-            f.write('%s\n' %num)
-    f.close()
 
 def evaluation(data, labels, params):
+    '''
+    Evaluate the performance of the model by outputing the accuracy of predictions.
+    '''
     h, output, cost = forward_prop(data, labels, params)
     accuracy = compute_accuracy(output, labels)
     return accuracy
@@ -179,6 +196,7 @@ if __name__ == '__main__':
     accuracy_train = []
     accuracy_val = []
 
+    # Training Epochs
     for epoch in range(num_epochs):
         gradient_descent_epoch(train_data, train_labels,
                                learning_rate, batch_size, param, forward_prop, backward_prop)
@@ -192,6 +210,7 @@ if __name__ == '__main__':
 
     t = np.arange(num_epochs)
 
+    # Visualize training/validation loss/accuracy
     fig, (ax1, ax2) = plt.subplots(2, 1)
 
     ax1.plot(t, cost_train, 'r', label='train')
