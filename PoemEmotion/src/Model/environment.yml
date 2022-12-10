@@ -1,1 +1,17 @@
-
+name: poem_classification
+channels:
+  - defaults
+dependencies:
+  - matplotlib
+  - numpy
+  - pip
+  - python
+  - scipy
+  - pillow
+  - scikit-learn
+  - spacy
+  - pandas
+  - en-core-web-sm
+  - imblearn
+  - nltk
+  - stanza
