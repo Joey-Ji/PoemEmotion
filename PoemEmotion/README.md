@@ -1,4 +1,4 @@
-CS229 Final Project
+# CS229 Final Project
 
 This file is created and edited by Junyi(Joey) Ji.
 
