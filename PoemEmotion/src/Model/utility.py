@@ -19,7 +19,7 @@ def load(filepath):
 
 def tokenizationWithLemmatization(dataset):
     '''
-    Tokenize the poems
+    Tokenize the poems with lemmatization
     '''
     token_list = []
     nlp = st.Pipeline(lang='en', processors='tokenize,mwt,pos,lemma', tokenize_no_ssplit=True, download_method=None)
